@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/ReactNativeProject" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Spring_Study" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Tablet_Project" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/WithSafe" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/react-native-naver-login" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/react-native-naver-login/NaverLoginExample/node_modules/@react-native-seoul/naver-login" vcs="Git" />
+  </component>
+</project>
