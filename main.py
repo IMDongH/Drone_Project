@@ -15,8 +15,11 @@ while True:
         # except:
         #     print("이해하지 못했음")
 
-        result = EW.eWord("빨간 모자 쓴 사람 찾아줘")
-        print(result)  # 안녕 출력
+        # result = EW.eWord("빨간 모자 쓴 사람 찾아줘")
+        result = EW.eWord("돌아")
+        print(result)
+        result = EW.eWord("배고파?")
+        print(result) #단어 추출 결과
 
     elif inputText == 'end':
         exit()

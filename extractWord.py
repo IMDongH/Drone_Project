@@ -15,7 +15,8 @@ def eWord(sentence):
             else:
                 sy.append(i)
 
-    sy.append(v[-1])
+    if len(v)!=0:
+        sy.append(v[-1])
 
     if '사람' in sy:
         sy.remove('사람')
