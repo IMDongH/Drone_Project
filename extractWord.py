@@ -2,7 +2,6 @@ from konlpy.tag import Okt
 
 
 def eWord(sentence):
-    print(sentence)
     twt = Okt()
     tagging = twt.pos(sentence)
 
@@ -15,7 +14,7 @@ def eWord(sentence):
             else:
                 sy.append(i)
 
-    if len(v)!=0:
+    if len(v) != 0:
         sy.append(v[-1])
 
     if '사람' in sy:
@@ -23,4 +22,3 @@ def eWord(sentence):
         return sy
     else:
         return sy
-
