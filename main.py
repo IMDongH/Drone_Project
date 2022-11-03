@@ -8,6 +8,7 @@ import torch
 import classifyWord as CW
 from djitellopy import Tello
 import sys
+import cv2 as cv
 sys.path.insert(0, './yolov5')
 # Recognizer = sr.Recognizer()  # 인스턴스 생성
 # mic = sr.Microphone()
@@ -59,22 +60,40 @@ model = torch.load("./model_data.pt", map_location=device)
 # print(model)
 # model = torch.load('./model_data.pth')
 
+# results.pandas().xyxy[0].xmax - results.pandas().xyxy[0].xmin >= 210 &&
+# results.pandas().xyxy[0].ymax - results.pandas().xyxy[0].ymin >= 210
+# go_back()
+#
+# results.pandas().xyxy[0].xmax - results.pandas().xyxy[0].xmin < 210 &&
+# results.pandas().xyxy[0].ymax - results.pandas().xyxy[0].ymin < 210
+# if 150 보다 작으면~:
+#     go_front()
+# else:
+#     # 위치 판단, 어디에 위치했는지 확인 후 이동
+#     area[x][y]
+#     x >= 210 & & x <= 420 & & y >= 210 & & y <= 420
+
+
+
 
 print("말해해해해")
-# myDrone = initTello()
 myDrone = Tello()
 # UDP 통신이어서 드론과 노트북이 1:1로 연결되어있어야한다
 myDrone.connect()
 print("\n * Drone battery percentage : " + str(myDrone.get_battery()) + "%")
-myDrone.takeoff()
-
-
+# myDrone.takeoff()
+myDrone.streamon()
+frame_read = myDrone.get_frame_read()
 # findResult = EW.eWord(findSen)
 # turnResult = EW.eWord(turnSen)
 # batteryResult = EW.eWord(batterySen)
 
 while True:
     inputText = input("음성 인식을 위해 'start' 를 입력하세요 : ")
+
+    frame = frame_read.frame
+
+    cv.imshow('Tello detection', frame)
 
     if inputText == 'start':
         # with mic as source:  # 안녕~이라고 말하면
@@ -86,19 +105,17 @@ while True:
 
 
             # Images
-            img = 'Kkarmi.jpg'  # or file, Path, PIL, OpenCV, numpy, list
+            img = 'Kkarmi3.jpg'  # or file, Path, PIL, OpenCV, numpy, list
             #
             # # Inference
             results = model(img)
 
             results.show()
-            results.print()
-            results.pandas().xyxy[0]
+            # results.print()
+            print(results.pandas().xyxy[0])
         # except Exception as e:
         #     print(e)
         #     continue
-
-
 
 
     elif inputText == 'end':
