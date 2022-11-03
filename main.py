@@ -1,5 +1,6 @@
 import speech_recognition as sr
 import extractWord as EW
+import torch
 import classifyWord as CW
 from utils import *
 
@@ -11,6 +12,7 @@ turnSen = "돌아"
 batterySen = "배고파?"
 
 myDrone = initTello()
+myDrone.takeoff()
 
 # findResult = EW.eWord(findSen)
 # turnResult = EW.eWord(turnSen)
@@ -24,10 +26,21 @@ while True:
             audio = Recognizer.listen(source)
         try:
             data = Recognizer.recognize_google(audio, language="ko")
+            print(data)
             CW.classification(data, myDrone)
         except Exception as e:
             print(e)
             continue
+        # model = torch.hub.load('ultralytics/yolov5', 'yolov5n' ,pretrained=True) # or yolov5n - yolov5x6, custom
+        #
+        # # Images
+        # img = 'https://ultralytics.com/images/zidane.jpg'  # or file, Path, PIL, OpenCV, numpy, list
+        #
+        # # Inference
+        # results = model(img)
+        # # results.pandas().xyxy[0]
+        # # Results
+        # results.print()
 
     elif inputText == 'end':
         exit()

@@ -3,14 +3,18 @@ import time
 
 def batteryF(drone):  #배터리 함수 추가
 
-    # print("\n * Drone battery percentage : " + str(drone.get_battery()) + "%")
+    print("\n * Drone battery percentage : " + str(drone.get_battery()) + "%")
     return "battery"
 
 
 def turnF(drone):  #도는 함수 추가
-
-    # drone.takeoff()
-    time.sleep(5)
+    print("turn")
+    # drone.rotate_clockwise(360)
+    drone.takeoff()
+    drone.flip("r")
+    time.sleep(2)
+    drone.flip("r")
+    time.sleep(2)
     return "turn"
 
 

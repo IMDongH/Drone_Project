@@ -6,7 +6,7 @@ orderList = ["찾아", "건네", "따라"]
 
 def classification(words, drone):
     flag = False
-
+    print(words)
     for i in range(len(orderList)):
         flag = True
         break
