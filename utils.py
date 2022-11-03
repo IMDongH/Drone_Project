@@ -6,7 +6,7 @@ def initTello():
     # UDP 통신이어서 드론과 노트북이 1:1로 연결되어있어야한다
     myDrone.connect()
     print("\n * Drone battery percentage : " + str(myDrone.get_battery()) + "%")
-
+    myDrone.takeoff()
     # 윗줄 주석 풀어야함
     return myDrone
 

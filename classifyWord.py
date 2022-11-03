@@ -7,6 +7,7 @@ orderList = ["찾아", "건네", "따라"]
 def classification(words, drone):
     flag = False
     print(words)
+
     for i in range(len(orderList)):
         flag = True
         break
@@ -14,7 +15,7 @@ def classification(words, drone):
     if "돌아" in words:
         droneFun.turnF(drone)
         return "돌아"  # 도는 함수 불러오기
-    elif "배고파?" in words:
+    elif "배고파" in words:
         droneFun.batteryF(drone)
         return "배고파"  # 배터리 잔량 함수 불러오기
     elif "사진" in words:

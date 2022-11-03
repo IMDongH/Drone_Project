@@ -9,8 +9,8 @@ def batteryF(drone):  #배터리 함수 추가
 
 def turnF(drone):  #도는 함수 추가
     print("turn")
-    # drone.rotate_clockwise(360)
-    drone.takeoff()
+    drone.rotate_clockwise(360)
+    # drone.takeoff()
     drone.flip("r")
     time.sleep(2)
     drone.flip("r")
