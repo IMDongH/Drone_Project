@@ -1,7 +1,8 @@
 # import speech_recognition as sr
 # import extractWord as EW
+import json
 import time
-
+import keyboard
 import pyaudio
 from vosk import Model, KaldiRecognizer
 # from torch import nn
@@ -17,18 +18,42 @@ height = 630
 
 frameWidth = width
 frameHeight = height
-objectList = ['cup', 'person', 'cell phone']
+# objectList = ['cup', 'person', 'cell phone']
+objectList = ['bottle']
 ###########################################
 
 def checkLocation(result):
     for i, data in enumerate(result):
         if data[0] in objectList:
-            if (data[3] - data[1]) > width/3 and (data[4] - data[2]) > height/3:
-                print('go_back()')
-            elif (data[3] - data[1]) < (width/3)*2/3 and (data[4] - data[2]) > (height/3)*2/3:
-                print('go_front()')
+            if (data[3] - data[1]) > width/3 or (data[4] - data[2]) > height/3:
+                # print('go_back()', (data[3] - data[1]) * (data[4] - data[2]))
+                # print('go_back()', (data[3] - data[1]) * (data[4] - data[2]))
+                myDrone.move_back(20)
+            elif (data[3] - data[1]) < (width/3)*1/3 or (data[4] - data[2]) < (height/3)*1/3:
+                # print('go_front()', (data[3] - data[1]) * (data[4] - data[2]))
+                myDrone.move_forward(20)
             else:
-                print("else")
+                if data[1] < 210 and data[2] < 210:
+                    print("1")
+                    myDrone.rotate_clockwise()
+                if data[1] > 210 and data[1] < 420 and data[2] < 210:
+                    print("2")
+                if data[1] > 420 and data[1] < 630 and data[2] < 210:
+                    print("3")
+
+                if data[1] < 210 and data[2] > 210 and data[2] < 420:
+                    print("4")
+                if data[1] > 210 and data[1] < 420 and data[2] > 210 and data[2] < 420:
+                    print("5")
+                if data[1] > 420 and data[1] < 630 and data[2] > 210 and data[2] < 420:
+                    print("6")
+
+                if data[1] < 210 and data[2] > 420 and data[2] < 630:
+                    print("7")
+                if data[1] > 210 and data[1] < 420 and data[2] > 420 and data[2] < 630:
+                    print("8")
+                if data[1] > 420 and data[1] < 630 and data[2] > 420 and data[2] < 630:
+                    print("9")
 
 ###########################################
 model = Model('/Users/oldst/PycharmProjects/Drone_Project/en')
@@ -45,7 +70,9 @@ while True:
     #     break
 
     if recognizer.AcceptWaveform(data):
-        print(recognizer.Result())
+        # print(recognizer.Result())
+        jsonObject = json.loads(recognizer.Result())
+        print(jsonObject.get('text'))
         break
 
 
@@ -68,6 +95,8 @@ myDrone.streamoff()
 print("\n * Drone battery percentage : " + str(myDrone.get_battery()) + "%")
 myDrone.streamon()
 
+myDrone.takeoff()
+
 while True:
     img = myDrone.get_frame_read().frame
     img = cv.resize(img, (width, height))
@@ -76,8 +105,19 @@ while True:
 
     checkLocation(results2.values)
 
+    for num, i in enumerate(results2.values):
+        if i[0] == 'bottle':
+            cv.putText(img, i[0], ((int(i[1]), int(i[2]))), cv.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+            cv.rectangle(img, (int(i[1]), int(i[2])), (int(i[3]), int(i[4])), (0, 0, 255), 3)
+
+
     cv.imshow('temp', img)
-    cv.waitKey(2)
+    cv.waitKey(1)
+
+    if keyboard.is_pressed('f'):
+        myDrone.land()
+        exit()
+
     # cv2.imshow(imgRGB)
 
     #######################################
