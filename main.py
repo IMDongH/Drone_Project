@@ -1,5 +1,5 @@
 # import speech_recognition as sr
-# import extractWord as EW
+import extractWord as EW
 import json
 import time
 import keyboard
@@ -59,7 +59,7 @@ def checkLocation(result):
 model = Model('/Users/oldst/PycharmProjects/Drone_Project/en')
 recognizer = KaldiRecognizer(model,16000)
 #
-print("말해해해해")
+print("please speak to dongchul : ")
 cap = pyaudio.PyAudio()
 stream = cap.open(format=pyaudio.paInt16, channels=1,rate=16000,input=True, frames_per_buffer=8192)
 stream.start_stream()
@@ -72,21 +72,10 @@ while True:
     if recognizer.AcceptWaveform(data):
         # print(recognizer.Result())
         jsonObject = json.loads(recognizer.Result())
-        print(jsonObject.get('text'))
+        # print(jsonObject.get('text').split())
+        print(EW.eWord(jsonObject.get('text').split()))
         break
 
-
-
-findSen = "초록색 모자 쓴 사람 찾아줘"
-turnSen = "돌아"
-batterySen = "배고파?"
-
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
-model = torch.load("./model_data.pt", map_location=device)
-
-
-print("말해해해해")
 myDrone = Tello()
 myDrone.connect()
 
@@ -96,6 +85,9 @@ print("\n * Drone battery percentage : " + str(myDrone.get_battery()) + "%")
 myDrone.streamon()
 
 myDrone.takeoff()
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = torch.load("./model_data.pt", map_location=device)
 
 while True:
     img = myDrone.get_frame_read().frame
@@ -118,40 +110,3 @@ while True:
         myDrone.land()
         exit()
 
-    # cv2.imshow(imgRGB)
-
-    #######################################
-    # img = cv.resize(results, (360, 240))
-    # cv.imshow("Image", img)
-
-    # cv.imwrite(frame)
-    # cv.imshow('plz', frame)
-    #
-    # results = model(frame)
-    #
-    # results.show()
-    # print(results.pandas().xyxy[0])
-    # cv.imshow('Tello detection', frame)
-    # cv.imwrite('Tello detection', results)
-    # if inputText == 'start':
-        # with mic as source:  # 안녕~이라고 말하면
-        #     audio = Recognizer.listen(source)
-        # try:
-        #     data = Recognizer.recognize_sphinx(audio)
-        #     print(data)
-        #     # CW.classification(data, myDrone)
-
-
-            # Images
-            # img = 'Kkarmi3.jpg'  # or file, Path, PIL, OpenCV, numpy, list
-            # # Inference
-
-        # except Exception as e:
-        #     print(e)
-        #     continue
-
-
-    # elif inputText == 'end':
-    #     exit()
-    # else:
-    #     continue
