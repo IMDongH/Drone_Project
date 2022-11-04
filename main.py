@@ -1,5 +1,6 @@
 # import speech_recognition as sr
 # import extractWord as EW
+import time
 
 import pyaudio
 from vosk import Model, KaldiRecognizer
@@ -10,9 +11,16 @@ from djitellopy import Tello
 import sys
 import cv2 as cv
 sys.path.insert(0, './yolov5')
-# Recognizer = sr.Recognizer()  # 인스턴스 생성
-# mic = sr.Microphone()
 
+width = 640
+height = 480
+
+frameWidth = width
+frameHeight = height
+cap2 = cv.VideoCapture(1)
+cap2.set(3, frameWidth)
+cap2.set(4, frameHeight)
+cap2.set(10,200)
 
 model = Model('/Users/oldst/PycharmProjects/Drone_Project/en')
 recognizer = KaldiRecognizer(model,16000)
@@ -75,27 +83,62 @@ model = torch.load("./model_data.pt", map_location=device)
 
 
 
-
 print("말해해해해")
 myDrone = Tello()
 # UDP 통신이어서 드론과 노트북이 1:1로 연결되어있어야한다
 myDrone.connect()
+
+myDrone.streamoff()
+
 print("\n * Drone battery percentage : " + str(myDrone.get_battery()) + "%")
 # myDrone.takeoff()
 myDrone.streamon()
-frame_read = myDrone.get_frame_read()
 # findResult = EW.eWord(findSen)
 # turnResult = EW.eWord(turnSen)
 # batteryResult = EW.eWord(batterySen)
 
+# time.sleep(1)
+#
+# frame_read = myDrone.get_frame_read()
+#
+# time.sleep(1)
+
 while True:
-    inputText = input("음성 인식을 위해 'start' 를 입력하세요 : ")
+    # inputText = input("음성 인식을 위해 'start' 를 입력하세요 : ")
 
-    frame = frame_read.frame
+    # frame = frame_read.frame
+    # img = cv.resize(frame, (width, height))
+    # cv.imshow('frame', img)
 
-    cv.imshow('Tello detection', frame)
+    img = myDrone.get_frame_read().frame
+    img = cv.resize(img, (630, 630))
+    results = model(img)
+    #######################################
+    results = results.pandas().xyxy[0][['name', 'xmin', 'ymin', 'xmax', 'ymax']]
 
-    if inputText == 'start':
+    for num, i in enumerate(results.values):
+        cv.putText(img, i[0], ((int(i[1]), int(i[2]))), cv.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+        cv.rectangle(img, (int(i[1]), int(i[2])), (int(i[3]), int(i[4])), (0, 0, 255), 3)
+
+
+    cv.imshow('temp', img)
+    # cv2.imshow(imgRGB)
+
+    #######################################
+    # img = cv.resize(results, (360, 240))
+    # cv.imshow("Image", img)
+    cv.waitKey(2)
+
+    # cv.imwrite(frame)
+    # cv.imshow('plz', frame)
+    #
+    # results = model(frame)
+    #
+    # results.show()
+    # print(results.pandas().xyxy[0])
+    # cv.imshow('Tello detection', frame)
+    # cv.imwrite('Tello detection', results)
+    # if inputText == 'start':
         # with mic as source:  # 안녕~이라고 말하면
         #     audio = Recognizer.listen(source)
         # try:
@@ -105,20 +148,15 @@ while True:
 
 
             # Images
-            img = 'Kkarmi3.jpg'  # or file, Path, PIL, OpenCV, numpy, list
-            #
+            # img = 'Kkarmi3.jpg'  # or file, Path, PIL, OpenCV, numpy, list
             # # Inference
-            results = model(img)
 
-            results.show()
-            # results.print()
-            print(results.pandas().xyxy[0])
         # except Exception as e:
         #     print(e)
         #     continue
 
 
-    elif inputText == 'end':
-        exit()
-    else:
-        continue
+    # elif inputText == 'end':
+    #     exit()
+    # else:
+    #     continue
