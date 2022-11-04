@@ -17,18 +17,39 @@ height = 630
 
 frameWidth = width
 frameHeight = height
-objectList = ['cup', 'person', 'cell phone']
+# objectList = ['cup', 'person', 'cell phone']
+objectList = ['cell phone']
 ###########################################
 
 def checkLocation(result):
     for i, data in enumerate(result):
         if data[0] in objectList:
-            if (data[3] - data[1]) > width/3 and (data[4] - data[2]) > height/3:
-                print('go_back()')
-            elif (data[3] - data[1]) < (width/3)*2/3 and (data[4] - data[2]) > (height/3)*2/3:
-                print('go_front()')
+            if (data[3] - data[1]) > width/3 or (data[4] - data[2]) > height/3:
+                # print('go_back()', (data[3] - data[1]) * (data[4] - data[2]))
+                print('go_back()', (data[3] - data[1]) * (data[4] - data[2]))
+            elif (data[3] - data[1]) < (width/3)*1/3 or (data[4] - data[2]) < (height/3)*1/3:
+                print('go_front()', (data[3] - data[1]) * (data[4] - data[2]))
             else:
-                print("else")
+                if data[1] < 210 and data[2] < 210:
+                    print("1")
+                if data[1] > 210 and data[1] < 420 and data[2] < 210:
+                    print("2")
+                if data[1] > 420 and data[1] < 630 and data[2] < 210:
+                    print("3")
+
+                if data[1] < 210 and data[2] > 210 and data[2] < 420:
+                    print("4")
+                if data[1] > 210 and data[1] < 420 and data[2] > 210 and data[2] < 420:
+                    print("5")
+                if data[1] > 420 and data[1] < 630 and data[2] > 210 and data[2] < 420:
+                    print("6")
+
+                if data[1] < 210 and data[2] > 420 and data[2] < 630:
+                    print("7")
+                if data[1] > 210 and data[1] < 420 and data[2] > 420 and data[2] < 630:
+                    print("8")
+                if data[1] > 420 and data[1] < 630 and data[2] > 420 and data[2] < 630:
+                    print("9")
 
 ###########################################
 model = Model('/Users/oldst/PycharmProjects/Drone_Project/en')
@@ -76,8 +97,14 @@ while True:
 
     checkLocation(results2.values)
 
+    for num, i in enumerate(results2.values):
+        if i[0] == 'cell phone':
+            cv.putText(img, i[0], ((int(i[1]), int(i[2]))), cv.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+            cv.rectangle(img, (int(i[1]), int(i[2])), (int(i[3]), int(i[4])), (0, 0, 255), 3)
+
+
     cv.imshow('temp', img)
-    cv.waitKey(2)
+    cv.waitKey(1)
     # cv2.imshow(imgRGB)
 
     #######################################
