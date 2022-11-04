@@ -18,8 +18,9 @@ height = 630
 
 frameWidth = width
 frameHeight = height
+findFlag = False
 # objectList = ['cup', 'person', 'cell phone']
-objectList = ['person']
+# objectList = ['bottle']
 ###########################################
 
 def checkLocation(offset_x, offset_y, offset_z):
@@ -47,7 +48,7 @@ def checkLocation(offset_x, offset_y, offset_z):
 
     if not 15000 <= offset_z <= 30000 and offset_z is not 0:
         if offset_z < 15000:
-            myDrone.move_forward(40)
+            myDrone.move_forward(60)
         elif offset_z > 30000:
             myDrone.move_back(40)
 
@@ -62,17 +63,18 @@ cap = pyaudio.PyAudio()
 stream = cap.open(format=pyaudio.paInt16, channels=1,rate=16000,input=True, frames_per_buffer=8192)
 stream.start_stream()
 
-# while True:
-#     data = stream.read(4096)
-#     # if len(data) == 0:
-#     #     break
-#
-#     if recognizer.AcceptWaveform(data):
-#         # print(recognizer.Result())
-#         jsonObject = json.loads(recognizer.Result())
-#         # print(jsonObject.get('text').split())
-#         print(EW.eWord(jsonObject.get('text').split()))
-#         break
+while True:
+    data = stream.read(4096)
+    # if len(data) == 0:
+    #     break
+
+    if recognizer.AcceptWaveform(data):
+        # print(recognizer.Result())
+        jsonObject = json.loads(recognizer.Result())
+        # print(jsonObject.get('text').split())
+        print(EW.eWord(jsonObject.get('text').split()))
+        # temp = EW.eWord(jsonObject.get('text').split())
+        break
 
 myDrone = Tello()
 myDrone.connect()
@@ -88,6 +90,10 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model = torch.load("./model_data_yolov5n.pt", map_location=device)
 
 while True:
+    if not findFlag:
+        myDrone.rotate_clockwise(30)
+        time.sleep(1)
+
     img = myDrone.get_frame_read().frame
     img = cv.resize(img, (width, height))
     results = model(img)
@@ -98,6 +104,7 @@ while True:
 
     for num, i in enumerate(results2.values):
             if i[0] == 'bottle':
+                findFlag = True
                 cv.putText(img, i[0], ((int(i[1]), int(i[2]))), cv.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
                 cv.rectangle(img, (int(i[1]), int(i[2])), (int(i[3]), int(i[4])), (0, 0, 255), 3)
                 object_center_x = (i[3] + i[1]) / 2
